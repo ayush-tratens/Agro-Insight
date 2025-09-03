@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agro-Insight // Crop Recommendation</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <style>
+        :root {
+            --primary-glow: #2DD4BF;
+            --bg-dark: #111827;
+            --panel-dark: #1F2937;
+            --input-dark: #374151;
+            --text-primary: #F9FAFB;
+            --text-secondary: #9CA3AF;
+            --border-color: #4B5563;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+        .dashboard-container {
+            display: flex;
+            max-width: 1200px;
+            width: 100%;
+            height: 90vh;
+            max-height: 850px;
+            background-color: var(--panel-dark);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        .sidebar {
+            width: 35%;
+            background-color: var(--panel-dark);
+            background-image:
+                linear-gradient(160deg, #374151, var(--panel-dark)),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='hexagons' fill='%23111827' fill-opacity='0.2' fill-rule='nonzero'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.99-7.5L26 15v18.5l-13 7.5L0 33.5V15z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            color: var(--text-primary);
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+        .sidebar .icon {
+            font-size: 5rem;
+            color: var(--primary-glow);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 25px rgba(45, 212, 191, 0.4);
+        }
+        .sidebar h1 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .sidebar p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .main-content {
+            width: 65%;
+            padding: 3rem 3.5rem;
+            overflow-y: auto;
+        }
+        .main-content h2 {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+        }
+        .form-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+        .form-control, .form-range {
+            border-radius: 10px;
+            background-color: var(--input-dark);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+        .form-control::placeholder { color: #6B7280; }
+        .form-control:focus, .form-range:focus {
+            background-color: var(--input-dark);
+            color: var(--text-primary);
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.2);
+        }
+        .form-range::-webkit-slider-thumb { background: var(--primary-glow); }
+        .form-range::-moz-range-thumb { background: var(--primary-glow); }
+        .input-group-text {
+            background-color: var(--input-dark);
+            border: 1px solid var(--border-color);
+            border-left: 0;
+            color: var(--text-secondary);
+            border-radius: 10px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        .input-group .form-control {
+            border-right: 0;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .btn-predict {
+            background: linear-gradient(90deg, #14B8A6, var(--primary-glow));
+            border: none;
+            padding: 0.9rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(45, 212, 191, 0.2);
+        }
+        .btn-predict:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(45, 212, 191, 0.3);
+        }
+        .result-card {
+            margin-top: 2rem;
+            background-color: var(--input-dark);
+            border: 1px solid var(--primary-glow);
+            border-radius: 12px;
+            padding: 1.5rem;
+            animation: scaleIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .result-card h5 { color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .result-crop { font-size: 2.2rem; font-weight: 700; color: var(--primary-glow); text-transform: capitalize; }
+        
+        @media (max-width: 992px) {
+            .dashboard-container { flex-direction: column; height: auto; max-height: none; }
+            .sidebar, .main-content { width: 100%; }
+            .sidebar { padding: 2.5rem; }
+            .main-content { padding: 2.5rem; }
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="icon"><i class="fa-solid fa-leaf"></i></div>
+            <h1>Agro-Insight</h1>
+            <p>Leverage data science to uncover the optimal crop for your specific soil composition and local climate conditions. Your digital partner in smart farming.</p>
+        </div>
+
+        <div class="main-content">
+            <h2>Analyze Your Farmland</h2>
+            
+            <!-- THIS IS THE CORRECTED FORM TAG -->
+            <form action="/predict" method="POST">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <label for="Nitrogen" class="form-label">Nitrogen</label>
+                        <input type="number" step="any" class="form-control" id="Nitrogen" name="Nitrogen" placeholder="e.g., 90" required min="0">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="Phosporus" class="form-label">Phosphorus</label>
+                        <input type="number" step="any" class="form-control" id="Phosporus" name="Phosporus" placeholder="e.g., 42" required min="0">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="Potassium" class="form-label">Potassium</label>
+                        <input type="number" step="any" class="form-control" id="Potassium" name="Potassium" placeholder="e.g., 43" required min="0">
+                    </div>
+                    
+                    <div class="col-12">
+                        <label for="Temperature" class="form-label">Temperature</label>
+                        <div class="d-flex gap-3">
+                            <input type="range" class="form-range" id="Temperature" name="Temperature" min="0" max="50" step="0.1" value="25">
+                            <div class="input-group" style="max-width: 130px;">
+                                <input type="number" class="form-control" id="tempValue" name="Temperature_num" min="0" max="50" step="0.1" value="25.0">
+                                <span class="input-group-text">°C</span>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="col-12">
+                        <label for="Humidity" class="form-label">Humidity</label>
+                         <div class="d-flex gap-3">
+                            <input type="range" class="form-range" id="Humidity" name="Humidity" min="0" max="100" step="0.1" value="75">
+                             <div class="input-group" style="max-width: 130px;">
+                                <input type="number" class="form-control" id="humidityValue" name="Humidity_num" min="0" max="100" step="0.1" value="75.0">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="col-12">
+                        <label for="Ph" class="form-label">Soil pH</label>
+                        <div class="d-flex gap-3">
+                            <input type="range" class="form-range" id="Ph" name="Ph" min="0" max="14" step="0.1" value="6.5">
+                            <div class="input-group" style="max-width: 130px;">
+                                <input type="number" class="form-control" id="phValue" name="Ph_num" min="0" max="14" step="0.1" value="6.5">
+                            </div>
+                        </div>
+                    </div>
+                     <div class="col-12">
+                        <label for="Rainfall" class="form-label">Rainfall</label>
+                        <div class="d-flex gap-3">
+                            <input type="range" class="form-range" id="Rainfall" name="Rainfall" min="0" max="300" step="0.1" value="150">
+                            <div class="input-group" style="max-width: 130px;">
+                                <input type="number" class="form-control" id="rainfallValue" name="Rainfall_num" min="0" max="300" step="0.1" value="150.0">
+                                <span class="input-group-text">mm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary btn-predict">
+                        Find Optimal Crop
+                    </button>
+                </div>
+            </form>
+            
+            <!-- THIS BLOCK DISPLAYS THE RESULT FROM FLASK -->
+            {% if result %}
+            <div class="result-card text-center">
+                <h5><i class="fa-solid fa-award"></i> Recommended Crop</h5>
+                <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+                    <p class="result-crop mb-0">{{ result.split(' ')[0] }}</p>
+                </div>
+                <a href="https://www.google.com/search?q=how+to+grow+{{ result.split(' ')[0] }}" target="_blank" class="btn btn-sm btn-outline-secondary mt-3">Learn How to Grow</a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // This script now only syncs the sliders with the number inputs.
+        // The form submission is handled by the browser.
+        document.addEventListener('DOMContentLoaded', () => {
+            const sliders = [
+                { range: document.getElementById('Temperature'), number: document.getElementById('tempValue') },
+                { range: document.getElementById('Humidity'), number: document.getElementById('humidityValue') },
+                { range: document.getElementById('Ph'), number: document.getElementById('phValue') },
+                { range: document.getElementById('Rainfall'), number: document.getElementById('rainfallValue') }
+            ];
+
+            sliders.forEach(pair => {
+                // When the slider is moved, update the number input
+                pair.range.addEventListener('input', () => {
+                    pair.number.value = parseFloat(pair.range.value).toFixed(1);
+                });
+                
+                // When the number input is changed, update the slider
+                pair.number.addEventListener('input', () => {
+                    let value = parseFloat(pair.number.value);
+                    const min = parseFloat(pair.range.min);
+                    const max = parseFloat(pair.range.max);
+                    if (isNaN(value)) return;
+                    if (value > max) { value = max; pair.number.value = max; }
+                    if (value < min) { value = min; pair.number.value = min; }
+                    pair.range.value = value;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
