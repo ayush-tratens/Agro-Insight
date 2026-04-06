@@ -81,6 +81,7 @@ Installation & Setup
 During development, ten different classification models were evaluated. The Random Forest Classifier was selected for its superior performance, achieving an accuracy of 99.3% on the unseen test data. The experimentation and evaluation process is documented in the Crop Classification With Recommendation System.ipynb notebook.
 
 
-Contributors
-Ayush Sharma — Lead, model training and full-stack deployment
-Anubhab Halder — Backend development and pipeline integration
+## Contributors
+
+**Ayush Sharma** — Lead, model training and full-stack deployment   
+**Anubhab Halder** — Backend development and pipeline integration
