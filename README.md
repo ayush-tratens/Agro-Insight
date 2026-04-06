@@ -157,3 +157,5 @@ The system can recommend from **22 different crops**, covering a wide variety of
 
 **Ayush Sharma** — Lead, model training and full-stack deployment  
 **Anubhab Halder** — Backend development and pipeline integration
+**Yashodhara Singh** — Testing, debugging and maintainence
+
